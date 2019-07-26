@@ -8,7 +8,7 @@ there is a cloudformation template.yaml to deploy both.
 
 In my test the cold start was:
 
-golang: 0.82ms
-java: 252ms
+* golang: 0.82ms
+* java: 252ms
 
 In the subsequent invokations, the execution times for both languages were about 0.50ms.

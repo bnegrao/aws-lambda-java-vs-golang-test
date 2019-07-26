@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: zica teste java lambda
+
+Parameters:
+    AliasName:
+        Type: String
+        Description: Environment name sufix - dev|hml|prod
+        Default: dev
+
+Resources:
+    JavaEcho:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: !Sub "${AWS::StackName}-JavaEcho"
+            Description: "Simple Lambda in Java that echoes back the string received. For cold start performance test"
+            Handler: example.JavaEcho::echo
+            CodeUri: target/echo-lambda-1.jar
+            MemorySize: 128
+            Runtime: java8
+            Timeout: 30
+            AutoPublishAlias: !Ref AliasName
+
+            Policies:
+            - AWSLambdaBasicExecutionRole
+
+    JavaEchoLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+            RetentionInDays: 60
+            LogGroupName: !Join ["", ["/aws/lambda/", !Ref JavaEcho]]
+
+    GoEcho:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: !Sub "${AWS::StackName}-GoEcho"
+            Description: "Simple Lambda in Go that echoes back the string received. For cold start performance test"
+            Handler: golang/main/GoEcho
+            MemorySize: 128
+            Runtime: go1.x
+            Timeout: 30
+            AutoPublishAlias: !Ref AliasName
+
+            Policies:
+            - AWSLambdaBasicExecutionRole
+
+    JavaEchoLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+            RetentionInDays: 60
+            LogGroupName: !Join ["", ["/aws/lambda/", !Ref GoEcho]]            
